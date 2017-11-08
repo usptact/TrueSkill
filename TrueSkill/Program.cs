@@ -9,8 +9,8 @@ namespace TrueSkill
     {
         public static void Main(string[] args)
         {
-            //bool[] outcomes_data = new bool[] { true }; // Jill wins
-            bool[] outcomes_data = new bool[] { false }; // Fred wins
+            bool[] outcomes_data = new bool[] { true }; // Jill wins
+            //bool[] outcomes_data = new bool[] { false }; // Fred wins
 
             int numGames = outcomes_data.Length;
             Range n = new Range(numGames);
