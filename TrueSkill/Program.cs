@@ -9,15 +9,15 @@ namespace TrueSkill
     {
         public static void Main(string[] args)
         {
-            bool[] outcomes_data = new bool[] { true }; // Jill wins
-            //bool[] outcomes_data = new bool[] { false }; // Fred wins
+            //bool[] outcomes_data = new bool[] { true }; // Jill wins
+            bool[] outcomes_data = new bool[] { false }; // Fred wins
 
             int numGames = outcomes_data.Length;
             Range n = new Range(numGames);
 
             // prior beliefs on skill
-            var Jskill = Variable.GaussianFromMeanAndVariance(120, 40 * 40);
-            var Fskill = Variable.GaussianFromMeanAndVariance(100, 5 * 5);
+            var Jskill = Variable.GaussianFromMeanAndVariance(120, 5 * 5);
+            var Fskill = Variable.GaussianFromMeanAndVariance(100, 40 * 40);
 
             // performance for 1+ games for Jill
             var Jperfs = Variable.Array<double>(n);
@@ -46,6 +46,7 @@ namespace TrueSkill
             Console.WriteLine("Fskill marginal = {0}", FskillMarginal);
 
             Console.WriteLine("Press any key...");
+
             Console.ReadKey();
         }
     }
