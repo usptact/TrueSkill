@@ -46,16 +46,18 @@ namespace TrueSkill
             {
                 using (Variable.If(Jperfs[n] > Fperfs[n]))
                 {
-                    using (Variable.If(Jperfs[n] > Fperfs[n] + drawMargin))
+                    var JillWins = Jperfs[n] - Fperfs[n] - drawMargin;
+                    using (Variable.If(JillWins > 0))
                         outcomes[n] = 1;
-                    using (Variable.IfNot(Jperfs[n] > Fperfs[n] + drawMargin))
+                    using (Variable.IfNot(JillWins > 0))
                         outcomes[n] = 0;
                 }
                 using (Variable.If(Fperfs[n] > Jperfs[n]))
                 {
-                    using (Variable.If(Fperfs[n] > Jperfs[n] + drawMargin))
+                    var FredWins = Fperfs[n] - Jperfs[n] - drawMargin;
+                    using (Variable.If(FredWins > 0))
                         outcomes[n] = 2;
-                    using (Variable.IfNot(Fperfs[n] > Jperfs[n] + drawMargin))
+                    using (Variable.IfNot(FredWins > 0))
                         outcomes[n] = 0;
                 }
             }
@@ -63,7 +65,7 @@ namespace TrueSkill
             // attaching data
             outcomes.ObservedValue = outcomes_data;
 
-            InferenceEngine engine = new InferenceEngine();
+            InferenceEngine engine = new InferenceEngine(new VariationalMessagePassing());
 
             Gaussian JskillMarginal = engine.Infer<Gaussian>(Jskill);
             Gaussian FskillMarginal = engine.Infer<Gaussian>(Fskill);
