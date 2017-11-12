@@ -2,6 +2,7 @@
 using MicrosoftResearch.Infer;
 using MicrosoftResearch.Infer.Distributions;
 using MicrosoftResearch.Infer.Models;
+using MicrosoftResearch.Infer.Maths;
 
 namespace TrueSkill
 {
@@ -9,8 +10,16 @@ namespace TrueSkill
     {
         public static void Main(string[] args)
         {
-            //bool[] outcomes_data = new bool[] { true }; // Jill wins
-            bool[] outcomes_data = new bool[] { false }; // Fred wins
+            int[] outcomes_data = new int[] {
+                                                1,  // Jill wins
+                                                1,  // Jill wins
+                                                1,  // Jill wins
+                                                1,  // Jill wins
+                                                1,  // Jill wins
+                                                2,  // Fred wins
+                                                2,  // Fred wins
+                                                0,  // Draw
+                                                0}; // Draw
 
             int numGames = outcomes_data.Length;
             Range n = new Range(numGames);
@@ -27,12 +36,29 @@ namespace TrueSkill
             var Fperfs = Variable.Array<double>(n);
             Fperfs[n] = Variable.GaussianFromMeanAndVariance(Fskill, 5 * 5).ForEach(n);
 
-            // game outcomes (true - Jill wins, false - Fred wins)
-            var outcomes = Variable.Array<bool>(n);
+            var drawMargin = Variable.GammaFromMeanAndVariance(1.0, 10.0);
+
+            // game outcomes (0 - Draw; 1 - Jill wins; 2 - Fred wins)
+            var outcomes = Variable.Array<int>(n);
 
             // model
             using (Variable.ForEach(n))
-                outcomes[n] = Jperfs[n] > Fperfs[n];
+            {
+                using (Variable.If(Jperfs[n] > Fperfs[n]))
+                {
+                    using (Variable.If(Jperfs[n] > Fperfs[n] + drawMargin))
+                        outcomes[n] = 1;
+                    using (Variable.IfNot(Jperfs[n] > Fperfs[n] + drawMargin))
+                        outcomes[n] = 0;
+                }
+                using (Variable.If(Fperfs[n] > Jperfs[n]))
+                {
+                    using (Variable.If(Fperfs[n] > Jperfs[n] + drawMargin))
+                        outcomes[n] = 2;
+                    using (Variable.IfNot(Fperfs[n] > Jperfs[n] + drawMargin))
+                        outcomes[n] = 0;
+                }
+            }
 
             // attaching data
             outcomes.ObservedValue = outcomes_data;
