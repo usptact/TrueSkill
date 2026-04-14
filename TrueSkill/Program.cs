@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.ML.Probabilistic.Distributions;
 using Microsoft.ML.Probabilistic.Models;
+using Range = Microsoft.ML.Probabilistic.Models.Range;
 
 namespace TrueSkill
 {
@@ -44,9 +45,6 @@ namespace TrueSkill
             Console.WriteLine("Jskill marginal = {0}", JskillMarginal);
             Console.WriteLine("Fskill marginal = {0}", FskillMarginal);
 
-            Console.WriteLine("Press any key...");
-
-            Console.ReadKey();
         }
     }
 }

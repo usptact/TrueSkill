@@ -38,3 +38,6 @@ Thumbs.db
 
 # dotCover
 *.dotCover
+
+# Infer.NET generated source
+GeneratedSource/
